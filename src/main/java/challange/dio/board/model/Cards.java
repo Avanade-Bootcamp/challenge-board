@@ -24,4 +24,10 @@ public class Cards {
     @ManyToOne
     @JoinColumn(name = "board_column_id", nullable = false)
     private BoardColumns boardColumn;
+
+    @Column(nullable = false)
+    private boolean blocked;
+
+    @Column(nullable = true)
+    private String blockReason;
 }

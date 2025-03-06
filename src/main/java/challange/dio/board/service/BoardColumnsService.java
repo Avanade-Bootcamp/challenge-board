@@ -28,4 +28,19 @@ public class BoardColumnsService {
     public void deleteBoardColumn(Long id) {
         boardColumnsRepository.deleteById(id);
     }
+
+    public List<BoardColumns> getColumnsByBoardId(Long boardId) {
+        return boardColumnsRepository.findByBoardId(boardId);
+    }
+
+    public BoardColumns getNextColumn(BoardColumns currentColumn) {
+        return boardColumnsRepository.findFirstByBoardIdAndOrderGreaterThanOrderByOrderAsc(
+                currentColumn.getBoard().getId(), currentColumn.getOrder())
+                .orElseThrow(() -> new EntityNotFoundException("No next column found"));
+    }
+
+    public BoardColumns getCancelColumn(Long boardId) {
+        return boardColumnsRepository.findFirstByBoardIdAndKind(boardId, "CANCEL")
+                .orElseThrow(() -> new EntityNotFoundException("Cancel column not found"));
+    }
 }

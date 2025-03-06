@@ -5,12 +5,16 @@ import java.util.Scanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import challange.dio.board.service.BoardService;
+import challange.dio.board.model.Board;
 
 @Component
 public class MainMenu {
 
     @Autowired
     private BoardService boardService;
+
+    @Autowired
+    private BoardMenu boardMenu;
 
     private final Scanner scanner = new Scanner(System.in);
 
@@ -49,6 +53,7 @@ public class MainMenu {
     }
 
     private void selectBoard() {
+        listAllBoards();
         System.out.println("Informe o nome do board");
         var boardName = scanner.next();
         var board = boardService.getAllBoards().stream()
@@ -57,12 +62,15 @@ public class MainMenu {
                 .orElse(null);
         if (board != null) {
             System.out.println("Board " + boardName + " selecionado com sucesso");
+            boardMenu.setBoard(board);
+            boardMenu.execute();
         } else {
             System.out.println("Board " + boardName + " não encontrado");
         }
     }
 
     private void deleteBoard() {
+        listAllBoards();
         System.out.println("Informe o nome do board");
         var boardName = scanner.next();
         var board = boardService.getAllBoards().stream()
@@ -74,6 +82,16 @@ public class MainMenu {
             System.out.println("Board " + boardName + " excluído com sucesso");
         } else {
             System.out.println("Board " + boardName + " não encontrado");
+        }
+    }
+
+    private void listAllBoards() {
+        var boards = boardService.getAllBoards();
+        if (boards.isEmpty()) {
+            System.out.println("Nenhum board encontrado.");
+        } else {
+            System.out.println("Boards disponíveis:");
+            boards.forEach(board -> System.out.println("- " + board.getName()));
         }
     }
 }
